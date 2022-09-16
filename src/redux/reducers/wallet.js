@@ -1,4 +1,4 @@
-import { FETCH_API } from '../actions';
+import { FETCH_API, SAVE_EXPENSE } from '../actions';
 
 const INITIAL_STATE = {
   currencies: [],
@@ -14,6 +14,12 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       currencies: Object.keys(action.payload).filter((e) => e !== 'USDT'),
     };
+
+  case SAVE_EXPENSE:
+    return {
+      expenses: [...state.expenses, { ...action.payload }],
+    };
+
   default:
     return state;
   }

@@ -1,23 +1,29 @@
 import React, { Component } from 'react';
-// import apiRequest from '../services/apiRequest';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { resultApi } from '../redux/actions';
+import apiRequest from '../services/apiRequest';
+import { resultApi, saveExpense } from '../redux/actions';
 
 class WalletForm extends Component {
   state = {
-    despesas: '',
-    despesasDesc: '',
+    id: 0,
+    value: '',
+    description: '',
     currency: 'USD',
     method: 'Dinheiro',
     tag: 'Alimentação',
-    // currencies: [],
+    totalValue: 0,
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(resultApi());
+    const { dispatchApi } = this.props;
+    dispatchApi();
   }
+
+  // fetchApi = async () => {
+  // const { dispatch } = this.props;
+  // dispatch(resultApi());
+  // }
 
   // passar essas funções pro redux
   // crr = async () => {
@@ -42,10 +48,38 @@ class WalletForm extends Component {
     });
   };
 
+  handleChanges = async (event, action) => {
+    event.preventDefault();
+    const {
+      value,
+      currency,
+      id,
+      totalValue,
+      description,
+      method,
+      tag } = this.state;
+    const {
+      dispatchSaveExpense } = this.props;
+    const fetchApi = await apiRequest();
+    const exchangeRates = fetchApi;
+    const valuePlusRate = (value * (exchangeRates[currency].ask)).toFixed(2);
+    dispatchSaveExpense({ id, value: valuePlusRate, description, currency, method, tag, exchangeRates });
+    this.setState({
+      id: id + 1,
+      value: '',
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: 'Alimentação',
+      totalValue: totalValue + valuePlusRate,
+    });
+    dispatchApi();
+  };
+
   render() {
     const {
-      despesas,
-      despesasDesc,
+      value,
+      description,
       currency,
       method,
       tag } = this.state;
@@ -56,16 +90,16 @@ class WalletForm extends Component {
         <input
           data-testid="value-input"
           type="text"
-          name="despesas"
+          name="value"
           onChange={ this.inputChange }
-          value={ despesas }
+          value={ value }
         />
         <input
           data-testid="description-input"
           type="text"
-          name="despesasDesc"
+          name="description"
           onChange={ this.inputChange }
-          value={ despesasDesc }
+          value={ description }
         />
         <select
           data-testid="currency-input"
@@ -74,7 +108,7 @@ class WalletForm extends Component {
           value={ currency }
         >
           {
-            currencies.length > 0 && currencies.map((e) => (
+            currencies.map((e) => (
               <option key={ e } value={ e }>{ e }</option>
             ))
           }
@@ -125,6 +159,7 @@ class WalletForm extends Component {
         </select>
         <button
           type="button"
+          onClick={ this.handleChanges }
         >
           Adicionar despesa
         </button>
@@ -134,7 +169,6 @@ class WalletForm extends Component {
 }
 
 WalletForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
@@ -142,4 +176,9 @@ const mapStateToProps = ({ wallet }) => ({
   currencies: wallet.currencies,
 });
 
-export default connect(mapStateToProps)(WalletForm);
+const mapDispatchToProps = (dispatch) => ({
+  dispatchSaveExpense: (expense) => dispatch(saveExpense(expense)),
+  dispatchApi: (result) => dispatch(resultApi(result)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);

@@ -6,7 +6,21 @@ class Header extends Component {
   render() {
     const {
       email,
-      totalValue } = this.props;
+      expenses } = this.props;
+
+    let total = 0;
+    if (expenses.length > 0) {
+      const result = [];
+      // const { expenses } = this.props;
+      expenses.forEach((e) => {
+        const totalValue = (e.value * (e.exchangeRates[e.currency].ask)).toFixed(2);
+        result.push(Number(totalValue));
+      });
+      const totalValor = result.reduce((acc, curr) => acc + curr);
+      total += totalValor;
+    }
+    console.log(total);
+
     return (
       <div>
         Header
@@ -14,7 +28,7 @@ class Header extends Component {
           { email }
         </p>
         <p data-testid="total-field">
-          { totalValue}
+          { total }
         </p>
         <p data-testid="header-currency-field">
           BRL
@@ -26,11 +40,15 @@ class Header extends Component {
 
 Header.propTypes = {
   email: PropTypes.string.isRequired,
-  totalValue: PropTypes.number.isRequired,
+  expenses: PropTypes.arrayOf(
+    PropTypes.shape,
+  )
+    .isRequired,
 };
 
 const mapStateToProps = (state) => ({
   email: state.user.email,
+  expenses: state.wallet.expenses,
 });
 
 export default connect(mapStateToProps)(Header);

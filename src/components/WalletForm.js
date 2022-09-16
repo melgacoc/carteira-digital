@@ -7,40 +7,17 @@ import { resultApi, saveExpense } from '../redux/actions';
 class WalletForm extends Component {
   state = {
     id: 0,
-    value: '',
+    value: 0,
     description: '',
     currency: 'USD',
     method: 'Dinheiro',
     tag: 'Alimentação',
-    totalValue: 0,
   };
 
   componentDidMount() {
     const { dispatchApi } = this.props;
     dispatchApi();
   }
-
-  // fetchApi = async () => {
-  // const { dispatch } = this.props;
-  // dispatch(resultApi());
-  // }
-
-  // passar essas funções pro redux
-  // crr = async () => {
-  // const crrApiRequest = await apiRequest();
-  // this.setState({
-  // result: crrApiRequest,
-  // });
-  // this.filterCrr();
-  // }
-
-  // filterCrr = () => {
-  // const { result } = this.state;
-  // const fresult = Object.keys(result).filter((e) => e !== 'USDT');
-  // this.setState({
-  // result: fresult,
-  // });
-  // }
 
   inputChange = (event) => {
     this.setState({
@@ -54,16 +31,16 @@ class WalletForm extends Component {
       value,
       currency,
       id,
-      totalValue,
+
       description,
       method,
       tag } = this.state;
     const {
       dispatchSaveExpense } = this.props;
-    const fetchApi = await apiRequest();
+    const fetchApi = await apiRequest(action);
     const exchangeRates = fetchApi;
-    const valuePlusRate = (value * (exchangeRates[currency].ask)).toFixed(2);
-    dispatchSaveExpense({ id, value: valuePlusRate, description, currency, method, tag, exchangeRates });
+    dispatchSaveExpense({ id, value, description, currency, method, tag, exchangeRates });
+    // });
     this.setState({
       id: id + 1,
       value: '',
@@ -71,9 +48,7 @@ class WalletForm extends Component {
       currency: 'USD',
       method: 'Dinheiro',
       tag: 'Alimentação',
-      totalValue: totalValue + valuePlusRate,
     });
-    dispatchApi();
   };
 
   render() {
@@ -89,7 +64,7 @@ class WalletForm extends Component {
         WalletForm
         <input
           data-testid="value-input"
-          type="text"
+          type="number"
           name="value"
           onChange={ this.inputChange }
           value={ value }
@@ -170,6 +145,8 @@ class WalletForm extends Component {
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  dispatchApi: PropTypes.func.isRequired,
+  dispatchSaveExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = ({ wallet }) => ({

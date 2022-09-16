@@ -5,6 +5,7 @@ const INITIAL_STATE = {
   expenses: [],
   editor: false,
   idToEdit: 0,
+  totalValue: 0,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
@@ -17,7 +18,9 @@ const wallet = (state = INITIAL_STATE, action) => {
 
   case SAVE_EXPENSE:
     return {
+      ...state,
       expenses: [...state.expenses, { ...action.payload }],
+      totalValue: state.totalValue + action.payload.totalValue,
     };
 
   default:

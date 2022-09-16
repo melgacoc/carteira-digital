@@ -19,7 +19,6 @@ class Header extends Component {
       const totalValor = result.reduce((acc, curr) => acc + curr);
       total += totalValor;
     }
-    console.log(total);
 
     return (
       <div>

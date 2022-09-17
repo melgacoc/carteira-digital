@@ -1,0 +1,10 @@
+export const VALID_EMAIL = 'claudio@trybe.com';
+export const INVALID_EMAIL = 'claudio@trybe';
+export const VALID_PASSWORD = 'cccccc';
+export const INVALID_PASSWORD = 'ccc';
+export const VALID_VALUE = '100';
+export const INVALID_VALUE = 'a0a';
+export const VALID_DESCRIPTION = 'Hamburgão';
+export const INVALID_DESCRIPTION = '';
+export const INITIAL_VALUE = '0.00';
+export const INITIAL_CURRENCY = 'BRL';

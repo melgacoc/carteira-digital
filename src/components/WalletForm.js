@@ -134,6 +134,7 @@ class WalletForm extends Component {
         <button
           type="button"
           onClick={ this.handleChanges }
+          disabled={ !value || !description }
         >
           Adicionar despesa
         </button>

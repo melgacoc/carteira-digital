@@ -5,7 +5,6 @@ const INITIAL_STATE = {
   expenses: [],
   editor: false,
   idToEdit: 0,
-  totalValue: 0,
 };
 
 const wallet = (state = INITIAL_STATE, action) => {
@@ -20,7 +19,12 @@ const wallet = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       expenses: [...state.expenses, { ...action.payload }],
-      totalValue: state.totalValue + action.payload.totalValue,
+    };
+
+  case 'DELETE_EXPENSE':
+    return {
+      ...state,
+      expenses: state.expenses.filter((e) => e.id !== action.payload),
     };
 
   default:

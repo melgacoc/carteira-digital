@@ -3,6 +3,7 @@ import apiRequest from '../../services/apiRequest';
 export const EMAIL = 'EMAIL';
 export const FETCH_API = 'FETCH_API';
 export const SAVE_EXPENSE = 'SAVE_EXPENSE';
+export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 
 export const saveEmail = (email) => ({
   type: EMAIL,
@@ -22,4 +23,9 @@ export const resultApi = () => async (dispatch) => {
 export const saveExpense = (expenses) => ({
   type: SAVE_EXPENSE,
   payload: expenses,
+});
+
+export const deleteExpense = (id) => ({
+  type: DELETE_EXPENSE,
+  payload: id,
 });

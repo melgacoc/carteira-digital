@@ -27,7 +27,7 @@ class Header extends Component {
           { email }
         </p>
         <p data-testid="total-field">
-          { total }
+          { parseFloat(total).toFixed(2) }
         </p>
         <p data-testid="header-currency-field">
           BRL

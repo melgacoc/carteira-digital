@@ -31,7 +31,6 @@ class WalletForm extends Component {
       value,
       currency,
       id,
-
       description,
       method,
       tag } = this.state;

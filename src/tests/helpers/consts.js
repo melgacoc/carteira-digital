@@ -8,3 +8,6 @@ export const VALID_DESCRIPTION = 'Hamburgão';
 export const INVALID_DESCRIPTION = '';
 export const INITIAL_VALUE = '0.00';
 export const INITIAL_CURRENCY = 'BRL';
+export const EMAIL_INPUT = 'email-input';
+export const PASSWORD_INPUT = 'password-input';
+export const LOGIN_BUTTON = 'login-submit-btn';

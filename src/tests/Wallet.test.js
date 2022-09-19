@@ -3,103 +3,93 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouterAndRedux from './helpers/renderWith';
-import { VALID_EMAIL, VALID_PASSWORD, VALID_VALUE, INVALID_VALUE, VALID_DESCRIPTION, INVALID_DESCRIPTION, INITIAL_CURRENCY, INITIAL_VALUE } from './helpers/consts';
+import { VALID_EMAIL, VALID_PASSWORD, VALID_VALUE, INVALID_VALUE,
+  VALID_DESCRIPTION, INVALID_DESCRIPTION, INITIAL_CURRENCY,
+  INITIAL_VALUE, EMAIL_INPUT, PASSWORD_INPUT, CURRENCY_INPUT,
+  VALUE_INPUT, DESCRIPTION_INPUT, METHOD_INPUT, TAG_INPUT } from './helpers/consts';
 import mockData from './helpers/mockData';
 
+beforeEach(() => {
+  global.fetch = jest.fn(() => Promise.resolve({
+    json: () => Promise.resolve(mockData),
+  }));
+
+  const { history } = renderWithRouterAndRedux(<App />);
+
+  userEvent.type(screen.getByTestId(EMAIL_INPUT), VALID_EMAIL);
+  userEvent.type(screen.getByTestId(PASSWORD_INPUT), VALID_PASSWORD);
+  userEvent.click(screen.getByText(/Entrar/i));
+  expect(history.location.pathname).toBe('/carteira');
+});
+
 describe('Testa o componente Wallet', () => {
-  beforeEach(() => {
-    global.fetch = jest.fn(() => Promise.resolve({
-      json: () => Promise.resolve(mockData),
-    }));
-
-    renderWithRouterAndRedux(<App />);
-
-    const emailInput = screen.getByTestId('email-input');
-    userEvent.type(emailInput, VALID_EMAIL);
-    const passwordInput = screen.getByTestId('password-input');
-    userEvent.type(passwordInput, VALID_PASSWORD);
-    const loginButton = screen.getByTestId('login-submit-btn');
-    userEvent.click(loginButton);
-  });
-
-  const valueInput = screen.getByTestId('value-input');
-  const descriptionInput = screen.getByTestId('description-input');
-  const addExpenseButton = screen.getByText('Adicionar despesa');
-
   test('1- Testa se as informações estão presentes no componente Header', async () => {
-    const userEmail = await screen.findByTestId('email-field');
-    const userTotalValue = await screen.findByTestId('total-field');
-    const userCurrency = await screen.findByTestId('header-currency-field');
-    expect(userEmail).toBeInTheDocument();
-    expect(userEmail).toHaveTextContent(VALID_EMAIL);
-    expect(userTotalValue).toBeInTheDocument();
-    expect(userTotalValue).toHaveTextContent(INITIAL_VALUE);
-    expect(userCurrency).toBeInTheDocument();
-    expect(userCurrency).toHaveTextContent(INITIAL_CURRENCY);
+    expect(screen.getByTestId('EMAIL_INPUT')).toBeInTheDocument();
+    expect(screen.getByTestId('EMAIL_INPUT')).toHaveTextContent(VALID_EMAIL);
+    expect(screen.getByTestId('TOTAL_FIELD')).toBeInTheDocument();
+    expect(screen.getByTestId('TOTAL_FIELD')).toHaveTextContent(INITIAL_VALUE);
+    expect(screen.getByTestId('header-currency-field')).toBeInTheDocument();
+    expect(screen.getByTestId('header-currency-field')).toHaveTextContent(INITIAL_CURRENCY);
   });
 
   test('2- Testa se há todos os inputs no formulário', () => {
-    const currencyInput = screen.getByTestId('currency-input');
-    const methodInput = screen.getByTestId('method-input');
-    const tagInput = screen.getByTestId('tag-input');
-    expect(valueInput).toBeInTheDocument();
-    expect(descriptionInput).toBeInTheDocument();
-    expect(currencyInput).toBeInTheDocument();
-    expect(methodInput).toBeInTheDocument();
-    expect(tagInput).toBeInTheDocument();
+    expect(screen.getByTestId(VALUE_INPUT)).toBeInTheDocument();
+    expect(screen.getByTestId(DESCRIPTION_INPUT)).toBeInTheDocument();
+    expect(screen.getByTestId(CURRENCY_INPUT)).toBeInTheDocument();
+    expect(screen.getByTestId(METHOD_INPUT)).toBeInTheDocument();
+    expect(screen.getByTestId(TAG_INPUT)).toBeInTheDocument();
   });
 
   test('3-Testa se o botão Adicionar despesa existe', () => {
-    expect(addExpenseButton).toBeInTheDocument();
+    expect(screen.getByText(/Adicionar despesa/i)).toBeInTheDocument();
   });
 
   test('4-Testa se o botão Adicionar despesa está habilitado com inputs válidos', () => {
-    userEvent.type(valueInput, VALID_VALUE);
-    userEvent.type(descriptionInput, VALID_DESCRIPTION);
-    expect(addExpenseButton).not.toBeDisabled();
+    userEvent.type(screen.getByTestId(VALUE_INPUT), VALID_VALUE);
+    userEvent.type(screen.getByTestId(DESCRIPTION_INPUT), VALID_DESCRIPTION);
+    expect(screen.getByText(/Adicionar despesa/i)).not.toBeDisabled();
   });
 
   test('5-Testa se o botão Adicionar despesa está desabilitado com inputs inválidos', () => {
-    userEvent.type(valueInput, INVALID_VALUE);
-    userEvent.type(descriptionInput, INVALID_DESCRIPTION);
-    expect(addExpenseButton).toBeDisabled();
+    userEvent.type(screen.getByTestId(VALUE_INPUT), INVALID_VALUE);
+    userEvent.type(screen.getByTestId(DESCRIPTION_INPUT), INVALID_DESCRIPTION);
+    expect(screen.getByText(/Adicionar despesa/i)).toBeDisabled();
   });
 
   test('6-Testa se o botão Adicionar despesa está desabilitado somente com value inválido', () => {
-    userEvent.type(valueInput, INVALID_VALUE);
-    userEvent.type(descriptionInput, VALID_DESCRIPTION);
-    expect(addExpenseButton).toBeDisabled();
+    userEvent.type(screen.getByTestId(VALUE_INPUT), INVALID_VALUE);
+    userEvent.type(screen.getByTestId(DESCRIPTION_INPUT), VALID_DESCRIPTION);
+    expect(screen.getByText(/Adicionar despesa/i)).toBeDisabled();
   });
+
   test('7-Testa se o botão Adicionar despesa está desabilitado somente com description inválido', () => {
-    userEvent.type(valueInput, VALID_VALUE);
-    userEvent.type(descriptionInput, INVALID_DESCRIPTION);
-    expect(addExpenseButton).toBeDisabled();
+    userEvent.type(screen.getByTestId(VALUE_INPUT), VALID_VALUE);
+    userEvent.type(screen.getByTestId(DESCRIPTION_INPUT), INVALID_DESCRIPTION);
+    expect(screen.getByText(/Adicionar despesa/i)).toBeDisabled();
   });
 
-  test('8- Testa se o input currency possui 15 opções e inicia com USD', () => {
-    const currencyInput = screen.getByTestId('currency-input');
-    expect(currencyInput).toBeInTheDocument();
-    // expect(currencyInput).toHaveLength(15);
-    expect(currencyInput).toHaveValue('USD');
-  });
+  test('8- Testa se o valor muda ao adicionar despesa e excluir despesa', async () => {
+    const totalValueInitial = screen.getByTestId('total-field');
+    expect(totalValueInitial).toBeInTheDocument();
+    expect(totalValueInitial.innerHTML).toBe('0.00');
 
-  test('9- Testa se o input method possui 3 opções e inicia com Dinheiro', () => {
-    const methodInput = screen.getByTestId('method-input');
-    expect(methodInput).toBeInTheDocument();
-    // expect(methodInput).toHaveLength(3);
-    expect(methodInput).toHaveValue('Dinheiro');
-  });
+    const valueInput = screen.getByTestId('value-input');
+    expect(valueInput).toBeInTheDocument();
+    userEvent.type(valueInput, '100.00');
 
-  test('10- Testa se o input tag possui 6 opções e inicia com Alimentação', () => {
-    const tagInput = screen.getByTestId('tag-input');
-    expect(tagInput).toBeInTheDocument(6);
-    // expect(tagInput).toHaveLength(6);
-    expect(tagInput).toHaveValue('Alimentação');
-  });
+    const descriptionInput = screen.getByTestId('description-input');
+    expect(descriptionInput).toBeInTheDocument();
+    userEvent.type(descriptionInput, 'Teste');
 
-  test('11- Testa se a lista de gastos possui um cabeçalho com 7 elementos', () => {
-    const tableHeader = screen.getAllByRole('columnheader');
-    expect(tableHeader).toBeInTheDocument();
-    expect(tableHeader).toHaveLength(7);
+    const addButton = screen.getByRole('button', /Adicionar despesa/i);
+    expect(addButton).not.toBeDisabled();
+    userEvent.click(addButton);
+    const findValue = await screen.findByTestId('total-field');
+    expect(findValue.innerHTML).toBe('475.31');
+
+    const deleteButton = await screen.findByTestId('delete-btn');
+    userEvent.click(deleteButton);
+
+    expect(findValue.innerHTML).toBe('0.00');
   });
 });

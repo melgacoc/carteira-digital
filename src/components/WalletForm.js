@@ -75,18 +75,20 @@ class WalletForm extends Component {
           onChange={ this.inputChange }
           value={ description }
         />
-        <select
-          data-testid="currency-input"
-          name="currency"
-          onChange={ this.inputChange }
-          value={ currency }
-        >
-          {
-            currencies.map((e) => (
-              <option key={ e } value={ e }>{ e }</option>
-            ))
-          }
-        </select>
+        <form data-testid="currency-input">
+
+          <select
+            name="currency"
+            onChange={ this.inputChange }
+            value={ currency }
+          >
+            {
+              currencies.map((e) => (
+                <option key={ e } value={ e }>{ e }</option>
+              ))
+            }
+          </select>
+        </form>
         <select
           data-testid="method-input"
           name="method"

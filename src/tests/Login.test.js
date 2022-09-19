@@ -64,7 +64,7 @@ describe('Testa o componente Login', () => {
 
     userEvent.type(screen.getByTestId('email-input'), VALID_EMAIL);
     userEvent.type(screen.getByTestId(PASSWORD_INPUT), VALID_PASSWORD);
-    userEvent.type(screen.getByText(/Entrar/i));
+    userEvent.click(screen.getByText(/Entrar/i));
     expect(history.location.pathname).toBe('/carteira');
   });
 });

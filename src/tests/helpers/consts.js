@@ -19,3 +19,4 @@ export const METHOD_INPUT = 'method-input';
 export const TAG_INPUT = 'tag-input';
 export const EXPENSES_TABLE = 'expenses-table';
 export const TOTAL_FIELD = 'total-field';
+export const EMAIL_FIELD = 'email-field';

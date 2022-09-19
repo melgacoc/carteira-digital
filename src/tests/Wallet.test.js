@@ -24,8 +24,8 @@ beforeEach(() => {
 
 describe('Testa o componente Wallet', () => {
   test('1- Testa se as informações estão presentes no componente Header', async () => {
-    expect(screen.getByTestId('EMAIL_INPUT')).toBeInTheDocument();
-    expect(screen.getByTestId('EMAIL_INPUT')).toHaveTextContent(VALID_EMAIL);
+    expect(screen.getByText('email-field')).toBeInTheDocument();
+    expect(screen.getByTestId('email_field')).toHaveTextContent(VALID_EMAIL);
     expect(screen.getByTestId('TOTAL_FIELD')).toBeInTheDocument();
     expect(screen.getByTestId('TOTAL_FIELD')).toHaveTextContent(INITIAL_VALUE);
     expect(screen.getByTestId('header-currency-field')).toBeInTheDocument();
@@ -67,7 +67,9 @@ describe('Testa o componente Wallet', () => {
     userEvent.type(screen.getByTestId(DESCRIPTION_INPUT), INVALID_DESCRIPTION);
     expect(screen.getByText(/Adicionar despesa/i)).toBeDisabled();
   });
+});
 
+describe('Contnua Testando o componente Wallet', () => {
   test('8- Testa se o valor muda ao adicionar despesa e excluir despesa', async () => {
     const totalValueInitial = screen.getByTestId('total-field');
     expect(totalValueInitial).toBeInTheDocument();
